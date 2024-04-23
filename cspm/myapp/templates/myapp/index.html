@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Single Page App</title>
+    <script>
+        function getData() {
+            fetch('/get-data/')
+                .then(response => response.json())
+                .then(data => {
+                    const dataList = document.getElementById('data-list');
+                    dataList.innerHTML = '';
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `Name: ${item.name}, Age: ${item.age}`;
+                        dataList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
+</head>
+<body>
+   <h1>My Single Page App</h1>
+    <button onclick="getData()">Get Data</button>
+    <ul id="data-list"></ul>
+</body>
+</html>
