@@ -3,5 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('get-data/', views.get_data, name='get_data'),
+    path('iam/setup/', views.iam_setup, name='iam_setup'),
+    path('iam/teardown/', views.iam_teardown, name='iam_teardown'),
+    path('iam/scan/', views.iam_scan, name='iam_scan'),
 ]

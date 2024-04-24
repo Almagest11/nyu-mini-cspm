@@ -42,6 +42,8 @@ def nyu_ctl_user_with_administrator_access(client, users):
 
 
 def lambda_handler(event, context):
+    if context is None:
+        context = {}
     client = context.get('iam')
     if client is None:
         print("client not supplied, creating client")
@@ -53,10 +55,14 @@ def lambda_handler(event, context):
     findings.append(nyu_ctl_multiple_active_keys(client, users))
     findings.append(nyu_ctl_user_with_administrator_access(client, users))
 
-    return users, findings
+    return {"users":users, "findings": findings}
+
+def build_context():
+    global session
+    session = boto3.Session(profile_name='nyu')
+    return {"iam": session.client('iam')}
 
 
 if __name__ == "__main__":
-    session = boto3.Session(profile_name='nyu')
-    users, findings = lambda_handler(None, {"iam": session.client('iam')}) 
-    print(json.dumps({"users":users, "findings": findings}, indent = 2))
+    result = lambda_handler(None, build_context()) 
+    print(json.dumps(result, indent = 2))
