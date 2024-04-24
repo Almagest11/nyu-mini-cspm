@@ -1,8 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Single Page App</title>
+    <title>NYU Mini-CSPM</title>
     <script>
+        function iamSetup() {
+            fetch('/iam/setup/')
+                .then(response => response.json())
+                .then(data => {
+                    alert(data);
+                })
+                .catch(error => console.error(error));
+        }
+
+        function iamTeardown() {
+            fetch('/iam/teardown/')
+                .then(response => response.json())
+                .then(data => {
+                    alert(data);
+                })
+                .catch(error => console.error(error));
+        }
+
+        function iamScan() {
+            fetch('/iam/scan/')
+                .then(response => response.text())
+                .then(data => {
+                    const dataList = document.getElementById('iam-scan-results');
+                    dataList.innerHTML = '';
+                    dataList.innerText = data;
+                })
+                .catch(error => console.error(error));
+        }
+
         function getData() {
             fetch('/get-data/')
                 .then(response => response.json())
@@ -10,9 +39,12 @@
                     const dataList = document.getElementById('data-list');
                     dataList.innerHTML = '';
                     data.forEach(item => {
+                        item.users.forEach(arn, user => {
                         const li = document.createElement('li');
-                        li.textContent = `Name: ${item.name}, Age: ${item.age}`;
+                        li.textContent = `Arn: ${arn}, UserName: ${user}`;
                         dataList.appendChild(li);
+
+                        });
                     });
                 })
                 .catch(error => console.error(error));
@@ -20,8 +52,12 @@
     </script>
 </head>
 <body>
-   <h1>My Single Page App</h1>
-    <button onclick="getData()">Get Data</button>
-    <ul id="data-list"></ul>
+   <h1>NYU Mini-CSPM</h1>
+   <hr/>
+   <h2>IAM Misconfigurations</h2>
+   <button onclick="iamSetup()">Setup</button>
+   <button onclick="iamTeardown()">Teardown</button>
+   <button onclick="iamScan()">Scan</button>
+    <ul id="iam-scan-results"></ul>
 </body>
 </html>
