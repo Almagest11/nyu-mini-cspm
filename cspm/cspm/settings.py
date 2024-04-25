@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CACHE_MIDDLEWARE_SECONDS = 0
 
 # Application definition
 
@@ -116,7 +117,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'assets/'
+
+#STATIC_ROOT = '/vol/web/static'
+#MEDIA_ROOT = '/vol/web/media'
+
+#STATIC_ROOT = BASE_DIR / 'assets'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'assets'
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
