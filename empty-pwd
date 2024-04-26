@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Script looks for users configured with a bash shell. It loops through these users and checks to see if they have an empty password and are wheel group members.
+# If the user satisfies both criteria, the script sets a complex random password and sends the password to AWS Secrets Manager.
+
+ssh_users="$(cat /etc/passwd | grep '/bin/bash' | awk -F: '{print $1}')"
+wheel_members="$(sudo lid -g wheel | awk -F\( '{print $1}')"
+
+empty_passwords="0"
+
+for user in $ssh_users ;
+
+do
+
+        pwd_check="$(sudo passwd --status $user | awk '{print $2}')"
+
+        if [[ $pwd_check == 'NP' ]] && [[ $(echo ${wheel_members[@]} | grep $user) ]]  ; then
+                empty_passwords="1"
+                echo -e "Found the privileged user: $user with an empty password!"
+                password=$(tr -dc 'A-Za-z0-9!?%=' < /dev/urandom | head -c 15)
+                echo -e "Setting a new password..."
+                sudo usermod --password $(echo $password | openssl passwd -1 -stdin) $user
+		echo -e "Sending password to AWS Secrets Manager..."
+		epoch_time=$(date +%s)
+		aws secretsmanager create-secret --name $user"_password_"$epoch_time --description "Account password created automatically via empty password script." --secret-string "$password"
+		aws ssm create-ops-item --title "Privileged User With Empty Password" --description "The privileged user: "$user" was found with an empty password. A complex password was automatically set and stored in Secrets Manager." --source ec2 --severity 1
+        fi
+
+done
+
+if [ $empty_passwords == '0' ] ; then
+        echo "No empty passwords found."
+fi
