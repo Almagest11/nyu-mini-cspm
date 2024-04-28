@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/assets/css/loopple/loopple.css">
 </head>
 
-<body class="g-sidenav-show  bg-gray-200">
+<body class="g-sidenav-show  bg-gray-200" on="iamScan();">
     <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 position-absolute bg-gradient-dark loopple-fixed-start" id="sidenav-main" data-sidebar="true" data-sidebar-value="61">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
@@ -36,23 +36,23 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">password</i>
                         </div>
-                        <span class="nav-link-text ms-1">Exposed Credentials</span>
+                        <span class="nav-link-text ms-1">Insecure Credentials</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="/iam">
+                    <a class="nav-link text-white alert-secondary" href="/iam">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">group</i>
                         </div>
-                        <span class="nav-link-text ms-1">IAM Misconfigurations</span>
+                        <span class="nav-link-text ms-1">Identity & Access Mgmt</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white " href="/net">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">lan</i>
+                            <i class="material-icons opacity-10">cloud</i>
                         </div>
-                        <span class="nav-link-text ms-1">Network Misconfigurations</span>
+                        <span class="nav-link-text ms-1">Misconfigurations</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -60,7 +60,7 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">bug_report</i>
                         </div>
-                        <span class="nav-link-text ms-1">Vulnerability Management</span>
+                        <span class="nav-link-text ms-1">Vulnerability Mgmt</span>
                     </a>
                 </li>
                 <li class="nav-item mt-3">
@@ -105,8 +105,14 @@
         </div>
         <div class="sidenav-footer position-absolute w-100 bottom-0 ">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Page Options</h6>
-                <div class="mx-3">
-                <a class="btn bg-gradient-primary w-100" href="javascript:iamScan();" type="button">Scan</a>
+                       <div class="mx-3">
+                        <div id="spinner" style="visibility:hidden;">
+                          <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                          <span id="spinner-text">Loading...</span>
+                        </div>
+                        <a class="btn bg-gradient-primary w-100" href="javascript:iamScan();" type="button">Scan</a>
                 <a class="btn bg-gradient-primary w-100" href="javascript:iamSetup();" type="button">Setup</a>
                 <a class="btn bg-gradient-primary w-100" href="javascript:iamTeardown();" type="button">Teardown</a>
             </div>
@@ -115,7 +121,60 @@
     <div class="main-content position-relative max-height-vh-100 h-100 border-radius-lg" id="panel">
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl loopple-navbar-empty" id="navbarTop">
         </nav>
-        <div class="container-fluid pt-3">
+      <div class="container-fluid pt-3">
+        <div class="row removable">
+          <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+              <div class="card mb-4">
+                  <div class="card-header p-3 pt-2">
+                      <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                          <i class="material-icons opacity-10">person</i>
+                      </div>
+                      <div class="text-end pt-1">
+                          <p class="text-sm mb-0 text-capitalize">Users</p>
+                          <h4 class="mb-0" id="user-count">-</h4>
+                      </div>
+                  </div>
+                  <hr class="dark horizontal my-0">
+                  <div class="card-footer p-3" id="user-footer" style="visibility:hidden">
+                      <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+20% </span>than last week</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+              <div class="card mb-4">
+                  <div class="card-header p-3 pt-2">
+                      <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                          <i class="material-icons opacity-10">person</i>
+                      </div>
+                      <div class="text-end pt-1">
+                          <p class="text-sm mb-0 text-capitalize">Administrators</p>
+                          <h4 class="mb-0" id="admin-count">-</h4>
+                      </div>
+                  </div>
+                  <hr class="dark horizontal my-0">
+                  <div class="card-footer p-3" id="admin-footer" style="visibility:hidden">
+                      <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+100% </span>than last month</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+              <div class="card mb-4">
+                  <div class="card-header p-3 pt-2">
+                      <div class="icon icon-lg icon-shape bg-gradient-danger shadow-danger text-center border-radius-xl mt-n4 position-absolute">
+                          <i class="material-icons opacity-10">person</i>
+                      </div>
+                      <div class="text-end pt-1">
+                          <p class="text-sm mb-0 text-capitalize">Findings</p>
+                          <h4 class="mb-0" id="finding-count">-</h4>
+                      </div>
+                  </div>
+                  <hr class="dark horizontal my-0">
+                  <div class="card-footer p-3" id="finding-footer" style="visibility:hidden;">
+                      <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">+500%</span> than yesterday</p>
+                  </div>
+              </div>
+          </div>
+      </div>        
             <div class="row removable">
                 <div class="col-lg-12"></div>
             </div>
@@ -146,40 +205,18 @@
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Affected Asset</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Finding</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Remediation</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Remediation</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <i class="material-icons opacity-10 me-3">person</i>
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{Asset}</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-xs font-weight-bold">{Finding}</span>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold">{Description}</span>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold">{Remediation}</span>
-                                    </td>
-                                </tr>
+                            <tbody id="findings">
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-
-        <footer class="footer pt-3 pb-4">
+      <footer class="footer pt-3 pb-4">
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-lg-between">
                     <div class="col-lg-6 mb-lg-0 mb-4">
@@ -198,392 +235,134 @@
     <script src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/material-dashboard-2-builder/v3.0.4/assets/js/core/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/material-dashboard-2-builder/v3.0.4/assets/js/plugins/chartjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/material-dashboard-2-builder/v3.0.4/assets/js/material-dashboard.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
-        if(document.querySelector('.chart-pie')){
-        var ctx = document.querySelectorAll(".chart-pie");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-             type: "pie",
-              data: {
-                labels: ['Facebook', 'Direct', 'Organic', 'Referral'],
-                datasets: [{
-                  label: "Projects",
-                  weight: 9,
-                  cutout: 0,
-                  tension: 0.9,
-                  pointRadius: 2,
-                  borderWidth: 1,
-                  backgroundColor: ['#17c1e8', '#e91e63', '#3A416F', '#a8b8d8'],
-                  data: [15, 20, 12, 60],
-                  fill: false
-                }],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: false,
-                      drawOnChartArea: false,
-                      drawTicks: false,
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: false
-                    }
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: false,
-                      drawOnChartArea: false,
-                      drawTicks: false,
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: false,
-                    }
-                  },
-                },
-              },
-            });
-          });
-        }
-        
-        
-        if(document.querySelector('.chart-line')){
-        var ctx = document.querySelectorAll(".chart-line");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-              type: "line",
-              data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Facebook Ads",
-                    tension: 0,
-                    pointRadius: 5,
-                    pointBackgroundColor: "#e91e63",
-                    pointBorderColor: "transparent",
-                    borderColor: "#e91e63",
-                    borderWidth: 4,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    data: [50, 100, 200, 190, 400, 350, 500, 450, 700],
-                    maxBarThickness: 6
-                  },
-                  {
-                    label: "Google Ads",
-                    tension: 0,
-                    borderWidth: 0,
-                    pointRadius: 5,
-                    pointBackgroundColor: "#3A416F",
-                    pointBorderColor: "transparent",
-                    borderColor: "#3A416F",
-                    borderWidth: 4,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    data: [10, 30, 40, 120, 150, 220, 280, 250, 280],
-                    maxBarThickness: 6
-                  }
-                ],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: true,
-                      padding: 10,
-                      color: '#9ca2b7',
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: true,
-                      borderDash: [5, 5],
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#9ca2b7',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                },
-              },
-            });
-          })
-        }
-        
-        if(document.querySelector('.chart-bar')){
-        var ctx = document.querySelectorAll(".chart-bar");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-              type: "bar",
-              data: {
-                labels: ["M", "T", "W", "T", "F", "S", "S"],
-                datasets: [{
-                  label: "Sales",
-                  tension: 0.4,
-                  borderWidth: 0,
-                  borderRadius: 4,
-                  borderSkipped: false,
-                  backgroundColor: "rgba(255, 255, 255, .8)",
-                  data: [50, 20, 10, 22, 50, 10, 40],
-                  maxBarThickness: 6
-                }, ],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                      suggestedMin: 0,
-                      suggestedMax: 500,
-                      beginAtZero: true,
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                      color: "#fff"
-                    },
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#f8f9fa',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                },
-              },
-            });
-          })
-        }
-        
-        
-        if(document.querySelector('.chart-line-card')){
-        var ctx = document.querySelectorAll(".chart-line-card");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-              type: "line",
-              data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                  label: "Mobile apps",
-                  tension: 0,
-                  borderWidth: 0,
-                  pointRadius: 5,
-                  pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                  pointBorderColor: "transparent",
-                  borderColor: "rgba(255, 255, 255, .8)",
-                  borderColor: "rgba(255, 255, 255, .8)",
-                  borderWidth: 4,
-                  backgroundColor: "transparent",
-                  fill: true,
-                  data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-                  maxBarThickness: 6
-        
-                }],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#f8f9fa',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: false,
-                      drawOnChartArea: false,
-                      drawTicks: false,
-                      borderDash: [5, 5]
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#f8f9fa',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                },
-              },
-            });
-          })
-        }
-        
-        });
-    </script>
     <script src="/assets/js/loopple/loopple.js"></script>
 
 
     <!-- our code -->
     <script>
         function iamSetup() {
+            document.getElementById("spinner-text").innerText = "Setting up...";
+            spinner = document.getElementById("spinner");
+            spinner.style.visibility = "visible";
             fetch('/iam/setup/')
                 .then(response => response.json())
                 .then(data => {
-                    alert(data);
+                    iamScan();
                 })
-                .catch(error => console.error(error));
+                .catch(error => {
+                  console.error(error);                     
+                  spinner.style.visibility = "hidden";
+                });
         }
 
         function iamTeardown() {
+            document.getElementById("spinner-text").innerText = "Tearing down...";
+            spinner = document.getElementById("spinner");
+            spinner.style.visibility = "visible";
             fetch('/iam/teardown/')
                 .then(response => response.json())
                 .then(data => {
-                    alert(data);
+                    iamScan();
                 })
-                .catch(error => console.error(error));
+                .catch(error => {
+                  console.error(error);                     
+                  spinner.style.visibility = "hidden";
+                });
         }
 
         function iamScan() {
+            document.getElementById("spinner-text").innerText = "Scanning...";
+            spinner = document.getElementById("spinner");
+            spinner.style.visibility = "visible";
             fetch('/iam/scan/')
-                .then(response => response.text())
-                .then(data => {
-                    const dataList = document.getElementById('iam-scan-results');
-                    dataList.innerHTML = '';
-                    dataList.innerText = data;
-                })
-                .catch(error => console.error(error));
-        }
-
-        function getData() {
-            fetch('/get-data/')
                 .then(response => response.json())
                 .then(data => {
-                    const dataList = document.getElementById('data-list');
+                    const dataList = document.getElementById('findings');
                     dataList.innerHTML = '';
-                    data.forEach(item => {
-                        item.users.forEach(arn, user => {
-                        const li = document.createElement('li');
-                        li.textContent = `Arn: ${arn}, UserName: ${user}`;
-                        dataList.appendChild(li);
-
-                        });
+                    finding_count = 0;
+                    admin_count = 0;
+                    user_count = 0;
+                    
+                    Object.keys(data.users).forEach(key => {
+                      if (key.includes("admin")) {
+                        admin_count++;
+                      } else {
+                        user_count++;
+                      }
                     });
+
+                    data.findings.forEach(finding => {
+                        //const li = document.createElement('li');
+                        finding.items.forEach(item => {
+                          finding_count ++;
+                          row = `                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <i class="material-icons opacity-10 me-3">person</i>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">${item.UserName}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-xs font-weight-bold">${finding.name}</span>
+                                    </td>
+                                    <td class="align-middle text-sm">
+                                        <span class="text-xs font-weight-bold">${finding.description}</span>
+                                    </td>
+                                    <td class="align-middle text-sm">
+                                        <span class="text-xs font-weight-bold">${finding.remediation == undefined ? "Not Provided" : finding.remediation}</span>
+                                    </td>
+                                </tr>
+`;
+                        dataList.innerHTML += row;
+
+                        })
+                    });
+
+                    document.getElementById("user-count").innerText = user_count;
+                    document.getElementById("admin-count").innerText = admin_count;
+                    document.getElementById("finding-count").innerText = finding_count;
+                    document.getElementById("user-footer").style.visibility = user_count ? "visible" : "hidden";
+                    document.getElementById("admin-footer").style.visibility = admin_count ? "visible" : "hidden";
+                    document.getElementById("finding-footer").style.visibility = finding_count ? "visible" : "hidden";
+
+                    if (!finding_count) {
+                      row = `                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <i class="material-icons opacity-10 me-3"></i>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">No issues detected.</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-xs font-weight-bold"></span>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-xs font-weight-bold"></span>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-xs font-weight-bold"></span>
+                                    </td>
+                                </tr>           
+                                 `;
+                      dataList.innerHTML += row;
+          
+                    }
+                    spinner.style.visibility = "hidden";
                 })
-                .catch(error => console.error(error));
+                .catch(error => {
+                  console.error(error);                     
+                  spinner.style.visibility = "hidden";
+                });
         }
+
+        iamScan();
     </script>
 </body>
