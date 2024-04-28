@@ -36,7 +36,7 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">password</i>
                         </div>
-                        <span class="nav-link-text ms-1">Exposed Credentials</span>
+                        <span class="nav-link-text ms-1">Insecure Credentials</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -44,15 +44,15 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">group</i>
                         </div>
-                        <span class="nav-link-text ms-1">IAM Misconfigurations</span>
+                        <span class="nav-link-text ms-1">Identity & Access Mgmt</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="/net">
+                    <a class="nav-link text-white alert-secondary" href="/net">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">lan</i>
+                            <i class="material-icons opacity-10">cloud</i>
                         </div>
-                        <span class="nav-link-text ms-1">Network Misconfigurations</span>
+                        <span class="nav-link-text ms-1">Misconfigurations</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -60,7 +60,7 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">bug_report</i>
                         </div>
-                        <span class="nav-link-text ms-1">Vulnerability Management</span>
+                        <span class="nav-link-text ms-1">Vulnerability Mgmt</span>
                     </a>
                 </li>
                 <li class="nav-item mt-3">
@@ -106,11 +106,9 @@
         <div class="sidenav-footer position-absolute w-100 bottom-0 ">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Page Options</h6>
                 <div class="mx-3">
-                <!--
-                  <a class="btn bg-gradient-primary w-100" href="javascript:iamScan();" type="button">Scan</a>
-                  <a class="btn bg-gradient-primary w-100" href="javascript:iamSetup();" type="button">Setup</a>
-                  <a class="btn bg-gradient-primary w-100" href="javascript:iamTeardown();" type="button">Teardown</a>
-                -->
+                  <a class="btn bg-gradient-primary w-100" href="javascript:netScan();" type="button">Scan</a>
+                  <a class="btn bg-gradient-primary w-100" href="javascript:netSetup();" type="button">Misconfigure</a>
+                  <a class="btn bg-gradient-primary w-100" href="javascript:netTeardown();" type="button">Reset</a>
                 </div>
         </div>
     </aside>
@@ -121,11 +119,83 @@
             <div class="row removable">
                 <div class="col-lg-12"></div>
             </div>
+            <div class="alert alert-success text-white" role="alert">
+              <strong>Success!</strong> Cloudtrail is enabled!
+          </div>
+          
+          <div class="alert alert-warning text-white" role="alert">
+            <strong>Warning!</strong> Cloudtrail is not enabled!
+            <span style="float:right">
+            <button type="button" class="btn bg-gradient-secondary btn-sm">Remediate</button>
+          </span>
+          </div>
+      <div class="card mb-4">
+            <div class="card-header pb-0">
+                <div class="row">
+                    <div class="col-lg-6 col-7">
+                        <h6>Public S3 Buckets</h6>
+                    </div>
+            <!--
+                    <div class="col-lg-6 col-5 my-auto text-end">
+                        <div class="dropdown float-lg-end pe-4">
+                            <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
+                            </a>
+                            <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                                <li><a class="dropdown-item border-radius-md" href="javascript:iamScan();">Scan</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:iamSetup();">Setup</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:iamTeardown();">Teardown</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                  -->
+                </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+            <!--
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Affected Asset</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Finding</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Remediation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex px-2 py-1">
+                                        <div>
+                                            <i class="material-icons opacity-10 me-3">person</i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-sm">{Asset}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-xs font-weight-bold">{Finding}</span>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <span class="text-xs font-weight-bold">{Description}</span>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <span class="text-xs font-weight-bold">{Remediation}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+              -->
+            </div>
+        </div>
             <div class="card mb-4">
                 <div class="card-header pb-0">
                     <div class="row">
                         <div class="col-lg-6 col-7">
-                            <h6>Network Misconfigurations</h6>
+                            <h6>Security Group Misconfigurations</h6>
                         </div>
                 <!--
                         <div class="col-lg-6 col-5 my-auto text-end">
@@ -204,363 +274,8 @@
     <script src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/material-dashboard-2-builder/v3.0.4/assets/js/core/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/material-dashboard-2-builder/v3.0.4/assets/js/plugins/chartjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets@master/material-dashboard-2-builder/v3.0.4/assets/js/material-dashboard.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
-        if(document.querySelector('.chart-pie')){
-        var ctx = document.querySelectorAll(".chart-pie");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-             type: "pie",
-              data: {
-                labels: ['Facebook', 'Direct', 'Organic', 'Referral'],
-                datasets: [{
-                  label: "Projects",
-                  weight: 9,
-                  cutout: 0,
-                  tension: 0.9,
-                  pointRadius: 2,
-                  borderWidth: 1,
-                  backgroundColor: ['#17c1e8', '#e91e63', '#3A416F', '#a8b8d8'],
-                  data: [15, 20, 12, 60],
-                  fill: false
-                }],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: false,
-                      drawOnChartArea: false,
-                      drawTicks: false,
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: false
-                    }
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: false,
-                      drawOnChartArea: false,
-                      drawTicks: false,
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: false,
-                    }
-                  },
-                },
-              },
-            });
-          });
-        }
-        
-        
-        if(document.querySelector('.chart-line')){
-        var ctx = document.querySelectorAll(".chart-line");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-              type: "line",
-              data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Facebook Ads",
-                    tension: 0,
-                    pointRadius: 5,
-                    pointBackgroundColor: "#e91e63",
-                    pointBorderColor: "transparent",
-                    borderColor: "#e91e63",
-                    borderWidth: 4,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    data: [50, 100, 200, 190, 400, 350, 500, 450, 700],
-                    maxBarThickness: 6
-                  },
-                  {
-                    label: "Google Ads",
-                    tension: 0,
-                    borderWidth: 0,
-                    pointRadius: 5,
-                    pointBackgroundColor: "#3A416F",
-                    pointBorderColor: "transparent",
-                    borderColor: "#3A416F",
-                    borderWidth: 4,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    data: [10, 30, 40, 120, 150, 220, 280, 250, 280],
-                    maxBarThickness: 6
-                  }
-                ],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: true,
-                      padding: 10,
-                      color: '#9ca2b7',
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: true,
-                      borderDash: [5, 5],
-                      color: '#c1c4ce5c'
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#9ca2b7',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                },
-              },
-            });
-          })
-        }
-        
-        if(document.querySelector('.chart-bar')){
-        var ctx = document.querySelectorAll(".chart-bar");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-              type: "bar",
-              data: {
-                labels: ["M", "T", "W", "T", "F", "S", "S"],
-                datasets: [{
-                  label: "Sales",
-                  tension: 0.4,
-                  borderWidth: 0,
-                  borderRadius: 4,
-                  borderSkipped: false,
-                  backgroundColor: "rgba(255, 255, 255, .8)",
-                  data: [50, 20, 10, 22, 50, 10, 40],
-                  maxBarThickness: 6
-                }, ],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                      suggestedMin: 0,
-                      suggestedMax: 500,
-                      beginAtZero: true,
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                      color: "#fff"
-                    },
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#f8f9fa',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                },
-              },
-            });
-          })
-        }
-        
-        
-        if(document.querySelector('.chart-line-card')){
-        var ctx = document.querySelectorAll(".chart-line-card");
-          ctx.forEach(function(ctx) {
-            new Chart(ctx, {
-              type: "line",
-              data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                  label: "Mobile apps",
-                  tension: 0,
-                  borderWidth: 0,
-                  pointRadius: 5,
-                  pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                  pointBorderColor: "transparent",
-                  borderColor: "rgba(255, 255, 255, .8)",
-                  borderColor: "rgba(255, 255, 255, .8)",
-                  borderWidth: 4,
-                  backgroundColor: "transparent",
-                  fill: true,
-                  data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-                  maxBarThickness: 6
-        
-                }],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false,
-                  }
-                },
-                interaction: {
-                  intersect: false,
-                  mode: 'index',
-                },
-                scales: {
-                  y: {
-                    grid: {
-                      drawBorder: false,
-                      display: true,
-                      drawOnChartArea: true,
-                      drawTicks: false,
-                      borderDash: [5, 5],
-                      color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#f8f9fa',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                  x: {
-                    grid: {
-                      drawBorder: false,
-                      display: false,
-                      drawOnChartArea: false,
-                      drawTicks: false,
-                      borderDash: [5, 5]
-                    },
-                    ticks: {
-                      display: true,
-                      color: '#f8f9fa',
-                      padding: 10,
-                      font: {
-                        size: 14,
-                        weight: 300,
-                        family: "Roboto",
-                        style: 'normal',
-                        lineHeight: 2
-                      },
-                    }
-                  },
-                },
-              },
-            });
-          })
-        }
-        
-        });
-    </script>
     <script src="/assets/js/loopple/loopple.js"></script>
 
 
     <!-- our code -->
-    <script>
-        function sampleMethod() {
-            fetch('/endpoint/')
-                .then(response => response.json())
-                .then(data => {
-                    const dataList = document.getElementById('data-list');
-                    dataList.innerHTML = '';
-                    data.forEach(item => {
-                        item.users.forEach(arn, user => {
-                        const li = document.createElement('li');
-                        li.textContent = `Arn: ${arn}, UserName: ${user}`;
-                        dataList.appendChild(li);
-
-                        });
-                    });
-                })
-                .catch(error => console.error(error));
-        }
-    </script>
 </body>
