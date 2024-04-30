@@ -1,0 +1,76 @@
+schemaVersion: '0.3'
+description: Validate CloudTrail settings, secure open S3 buckets, and restrict open security groups
+assumeRole: '{{ AutomationAssumeRole }}'
+parameters:
+  AutomationAssumeRole:
+    type: String
+    description: IAM Role
+mainSteps:
+  - name: validateAndEnableCloudTrailLogging
+    action: aws:executeScript
+    nextStep: checkAndRemediateOpenS3Buckets
+    isEnd: false
+    onFailure: Abort
+    inputs:
+      Runtime: python3.8
+      Handler: cloudTrailHandler
+      Script: |
+        import boto3
+
+        def cloudTrailHandler(event, context):
+            client = boto3.client('cloudtrail')
+            trails_response = client.describe_trails()
+            for trail in trails_response['trailList']:
+                trail_status_response = client.get_trail_status(Name=trail['TrailARN'])
+                is_logging = trail_status_response.get('IsLogging', False)
+                log_file_validation = trail_status_response.get('LogFileValidationEnabled', False)
+                if not is_logging or not log_file_validation:
+                    client.update_trail(
+                        Name=trail['Name'],
+                        EnableLogFileValidation=True,
+                        S3BucketName=trail['S3BucketName']
+                    )
+                    print(f"Updated CloudTrail {trail['Name']}: Enabled logging and log file validation.")
+                else:
+                    print(f"CloudTrail {trail['Name']} is already configured properly.")
+  - name: checkAndRemediateOpenS3Buckets
+    action: aws:executeScript
+    nextStep: restrictOpenSecurityGroups
+    isEnd: false
+    onFailure: Abort
+    inputs:
+      Runtime: python3.8
+      Handler: s3BucketHandler
+      Script: |
+        import boto3
+
+        def s3BucketHandler(event, context):
+            s3 = boto3.client('s3')
+            buckets_response = s3.list_buckets()
+            for bucket in buckets_response['Buckets']:
+                bucket_acl = s3.get_bucket_acl(Bucket=bucket['Name'])
+                public_grants = [grant for grant in bucket_acl['Grants'] if 'URI' in grant.get('Grantee', {}) and 'AllUsers' in grant['Grantee']['URI']]
+                if public_grants:
+                    s3.put_bucket_acl(Bucket=bucket['Name'], ACL='private')
+                    print(f"Applied 'private' ACL to bucket {bucket['Name']}.")
+                else:
+                    print(f"Bucket {bucket['Name']} is secure (not publicly accessible).")
+  - name: restrictOpenSecurityGroups
+    action: aws:executeScript
+    isEnd: true
+    onFailure: Abort
+    inputs:
+      Runtime: python3.8
+      Handler: securityGroupHandler
+      Script: |
+        import boto3
+
+        def securityGroupHandler(event, context):
+            ec2 = boto3.client('ec2')
+            all_groups = ec2.describe_security_groups()
+            for group in all_groups['SecurityGroups']:
+                for rule in group['IpPermissions']:
+                    if '0.0.0.0/0' in [ip_range['CidrIp'] for ip_range in rule.get('IpRanges', [])]:
+                        print(f"Security Group {group['GroupId']} has open inbound rules. Restricting now...")
+                        ec2.revoke_security_group_ingress(GroupId=group['GroupId'], IpPermissions=[rule])
+                        print(f"Restricted inbound traffic for Security Group {group['GroupId']}.")
